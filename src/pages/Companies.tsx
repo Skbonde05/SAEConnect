@@ -1,13 +1,17 @@
 import { companies, platformStats } from "../lib/mockData";
 import CompanyCard from "../components/CompanyCard";
 import StatCard from "../components/StatCard";
+import Navbar from "../components/Navbar";
 import {
     Search, Building2, FileText, Users, Star, TrendingUp,
-    Quote, Activity, Flame
+    Quote, Activity, Flame, MessageSquare
 } from "lucide-react";
+
+type NavTab = "home" | "experiences" | "companies" | "ask-share" | "insights" | "about";
 
 interface Props {
     onViewCompany: (slug: string) => void;
+    onNavigate: (tab: NavTab) => void;
 }
 
 const categories = [
@@ -21,13 +25,16 @@ const categories = [
     { label: "Other", count: 18 },
 ];
 
-export default function Companies({ onViewCompany }: Props) {
+export default function Companies({ onViewCompany, onNavigate }: Props) {
     const topCompanies = [...companies].sort((a, b) => b.experiences - a.experiences).slice(0, 5);
     const trendingCompanies = [...companies].sort((a, b) => b.rating - a.rating).slice(0, 3);
 
     return (
         <div className="bg-stone-50 min-h-screen">
-            {/* NAVY HERO */}
+            {/* ═══════ NAVBAR ═══════ */}
+            <Navbar activeTab="companies" onNavigate={onNavigate} />
+
+            {/* ═══════ NAVY HERO ═══════ */}
             <section className="relative overflow-hidden bg-[#1a2332] border-b border-amber-500/20">
                 <div className="absolute -top-32 -right-32 w-96 h-96 bg-amber-500/10 rounded-full blur-3xl" />
                 <div className="absolute -bottom-32 -left-32 w-96 h-96 bg-amber-600/10 rounded-full blur-3xl" />
@@ -52,6 +59,7 @@ export default function Companies({ onViewCompany }: Props) {
                         </p>
                     </div>
 
+                    {/* Search Bar */}
                     <div className="max-w-2xl mx-auto">
                         <div className="flex bg-white rounded-2xl shadow-2xl border-2 border-amber-500/30 hover:border-amber-500/60 transition-all overflow-hidden">
                             <div className="flex items-center pl-5 text-amber-600">
@@ -67,10 +75,12 @@ export default function Companies({ onViewCompany }: Props) {
                             </button>
                         </div>
                     </div>
+
+
                 </div>
             </section>
 
-            {/* LIVE ACTIVITY STRIP */}
+            {/* ═══════ LIVE ACTIVITY STRIP ═══════ */}
             <section className="bg-white border-b border-amber-100">
                 <div className="max-w-7xl mx-auto px-6 py-3 flex items-center justify-between">
                     <div className="flex items-center gap-2">
@@ -95,8 +105,8 @@ export default function Companies({ onViewCompany }: Props) {
                 </div>
             </section>
 
-            {/* FILTERS */}
-            <section className="bg-white border-b border-amber-100 sticky top-0 z-40">
+            {/* ═══════ FILTERS + SORT ═══════ */}
+            <section className="bg-white border-b border-amber-100 sticky top-16 z-40">
                 <div className="max-w-7xl mx-auto px-6 py-4 flex flex-wrap items-center justify-between gap-4">
                     <div className="flex flex-wrap gap-2">
                         {categories.map((c) => (
@@ -122,7 +132,7 @@ export default function Companies({ onViewCompany }: Props) {
                 </div>
             </section>
 
-            {/* SECTION TITLE */}
+            {/* ═══════ SECTION TITLE ═══════ */}
             <section className="max-w-7xl mx-auto px-6 pt-8">
                 <div className="flex items-end justify-between mb-1">
                     <div>
@@ -137,7 +147,7 @@ export default function Companies({ onViewCompany }: Props) {
                 </div>
             </section>
 
-            {/* MAIN GRID + SIDEBAR */}
+            {/* ═══════ MAIN GRID + SIDEBAR ═══════ */}
             <section className="max-w-7xl mx-auto px-6 py-8 grid lg:grid-cols-4 gap-6">
                 <div className="lg:col-span-3 grid sm:grid-cols-2 xl:grid-cols-3 gap-5">
                     {companies.map((c) => (
@@ -151,7 +161,7 @@ export default function Companies({ onViewCompany }: Props) {
                             <TrendingUp className="w-4 h-4 text-amber-600" /> Company Insights
                         </h3>
                         <div className="space-y-2">
-                            <StatCard icon={Building2} value={platformStats.companies} label="Companies" />
+                            <StatCard icon={Building2} value={platformStats.companies} label="Companies" color="text-[#1a2332] bg-amber-100" />
                             <StatCard icon={FileText} value={`${platformStats.totalExperiences.toLocaleString()}+`} label="Total Experiences" color="text-emerald-600 bg-emerald-50" />
                             <StatCard icon={Users} value={`${platformStats.contributors}+`} label="Students & Alumni" color="text-[#1a2332] bg-amber-50" />
                             <StatCard icon={Star} value={`${platformStats.avgRating}/5`} label="Average Rating" color="text-amber-600 bg-amber-50" />
