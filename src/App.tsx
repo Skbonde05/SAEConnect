@@ -2,19 +2,18 @@ import { useState } from "react";
 import SplashScreen from "./components/SplashScreen";
 import Login from "./components/Login";
 import Register from "./components/Register";
+import Companies from "./pages/Companies";
+import CompanyDetails from "./pages/CompanyDetails";
 import "./index.css";
 
-type Screen = "splash" | "login" | "register" | "home";
+type Screen = "splash" | "login" | "register" | "home" | "companies" | "company-details";
 
 function App() {
   const [screen, setScreen] = useState<Screen>("splash");
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [selectedCompanySlug, setSelectedCompanySlug] = useState<string>("");
 
-  /* =====================================================
-     SPLASH SCREEN
-     - Get Started → login (if not logged in) / home (if logged in)
-  ===================================================== */
-
+  /* SPLASH */
   if (screen === "splash") {
     return (
       <SplashScreen
@@ -26,58 +25,59 @@ function App() {
     );
   }
 
-  /* =====================================================
-     LOGIN PAGE
-  ===================================================== */
-
+  /* LOGIN */
   if (screen === "login") {
     return (
       <Login
-        onCreateAccount={() => {
-          setScreen("register");
-        }}
-        onForgotPassword={() => {
-          console.log("Forgot password clicked");
-        }}
+        onCreateAccount={() => setScreen("register")}
+        onForgotPassword={() => console.log("Forgot password clicked")}
         onLogin={(emailOrPrn, password) => {
           console.log("Email / PRN:", emailOrPrn);
           console.log("Password:", password);
-
-          // Supabase authentication will be connected here later.
-          // On success:
           setIsLoggedIn(true);
-          setScreen("home");
+          setScreen("companies"); // ← Land on Companies after login
         }}
       />
     );
   }
 
-  /* =====================================================
-     REGISTER PAGE
-  ===================================================== */
-
+  /* REGISTER */
   if (screen === "register") {
     return (
       <Register
-        onLogin={() => {
-          setScreen("login");
-        }}
+        onLogin={() => setScreen("login")}
         onRegister={(data) => {
           console.log("Registration Data:", data);
-
-          // Supabase registration will be connected here later.
-          // On success:
           setIsLoggedIn(true);
-          setScreen("home");
+          setScreen("companies"); // ← Land on Companies after register
         }}
       />
     );
   }
 
-  /* =====================================================
-     HOME PAGE
-  ===================================================== */
+  /* COMPANY DETAILS */
+  if (screen === "company-details" && selectedCompanySlug) {
+    return (
+      <CompanyDetails
+        slug={selectedCompanySlug}
+        onBack={() => setScreen("companies")}
+      />
+    );
+  }
 
+  /* COMPANIES LISTING */
+  if (screen === "companies") {
+    return (
+      <Companies
+        onViewCompany={(slug) => {
+          setSelectedCompanySlug(slug);
+          setScreen("company-details");
+        }}
+      />
+    );
+  }
+
+  /* HOME */
   return (
     <section id="center">
       <div className="hero"></div>
