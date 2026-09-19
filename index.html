@@ -4,7 +4,28 @@
     <meta charset="UTF-8" />
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>sph</title>
+    <script>
+      window.onerror = function(msg, url, line, col, error) {
+        var el = document.getElementById('root');
+        if (el) {
+          el.innerHTML = '<div style="background:#1a2332;color:#f87171;padding:30px;font-family:sans-serif;font-size:15px;min-height:100vh;">' +
+            '<h2 style="color:#c9a961;margin-bottom:10px;">JavaScript Error Detected</h2>' +
+            '<p style="color:#faf7f0;"><strong>Message:</strong> ' + msg + '</p>' +
+            '<p style="color:#fef3c7;"><strong>Location:</strong> ' + url + ':' + line + ':' + col + '</p>' +
+            '<pre style="background:#141c28;color:#fbbf24;padding:15px;border-radius:8px;overflow:auto;margin-top:15px;white-space:pre-wrap;">' + (error && error.stack ? error.stack : msg) + '</pre>' +
+          '</div>';
+        }
+      };
+      window.onunhandledrejection = function(e) {
+        var el = document.getElementById('root');
+        if (el) {
+          el.innerHTML = '<div style="background:#1a2332;color:#f87171;padding:30px;font-family:sans-serif;font-size:15px;min-height:100vh;">' +
+            '<h2 style="color:#c9a961;margin-bottom:10px;">Unhandled Rejection</h2>' +
+            '<pre style="background:#141c28;color:#fbbf24;padding:15px;border-radius:8px;overflow:auto;">' + (e.reason ? e.reason.stack || e.reason : 'Unknown rejection') + '</pre>' +
+          '</div>';
+        }
+      };
+    </script>
   </head>
   <body>
     <div id="root"></div>
