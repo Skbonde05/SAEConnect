@@ -5,14 +5,18 @@ import {
   BookOpen,
   MessageCircle,
   Users,
-  GraduationCap,
   Quote,
   Sparkles,
 } from "lucide-react";
+import { BrandMark } from "./Brand";
 
 interface SplashScreenProps {
-  duration?: number;
-  onFinish?: () => void;
+  /**
+   * When false the call-to-action buttons stay disabled. The app uses this to
+   * keep them locked until the Supabase session check resolves, so a
+   * signed-in user is never flashed the login page.
+   */
+  ready?: boolean;
   onGetStarted?: () => void;
   onLogin?: () => void;
 }
@@ -24,7 +28,7 @@ interface SplashScreenProps {
 const slides = [
   {
     image: "/images/image1.png",
-    title: "Welcome to Sinhgad Placement Hub.",
+    title: "Welcome to SAEConnect.",
     description:
       "Your campus-driven space to explore, connect and grow together.",
   },
@@ -52,7 +56,7 @@ const features = [
     title: "Explore",
     description: "Real placement experiences",
     iconBg: "bg-blue-100",
-    iconColor: "text-blue-600",
+    iconColor: "text-brand-blue",
     ring: "ring-blue-200/70",
   },
   {
@@ -67,9 +71,9 @@ const features = [
     icon: BarChart3,
     title: "Gain Insights",
     description: "Discover trends & opportunities",
-    iconBg: "bg-amber-100",
-    iconColor: "text-amber-600",
-    ring: "ring-amber-200/70",
+    iconBg: "bg-[#c9a227]/10",
+    iconColor: "text-[#c9a227]",
+    ring: "ring-[#c9a227]/30",
   },
   {
     icon: Users,
@@ -86,22 +90,17 @@ const features = [
 ===================================================== */
 
 export default function SplashScreen({
-  duration = 6000,
-  onFinish,
+  ready = true,
   onGetStarted,
+  onLogin,
 }: SplashScreenProps) {
   const [currentSlide, setCurrentSlide] = useState(0);
 
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      onFinish?.();
-    }, duration);
-
-    return () => clearTimeout(timer);
-  }, [duration, onFinish]);
+  /* No auto-advance timer: the splash stays until the user acts. The parent
+     routes to HomeDashboard when a session already exists, otherwise Login. */
 
   /* ===================================================
-     AUTOMATIC SLIDER
+     AUTOMATIC SLIDER (background images only)
   =================================================== */
 
   useEffect(() => {
@@ -139,7 +138,7 @@ export default function SplashScreen({
         <div className="absolute inset-0 bg-gradient-to-b from-slate-950/60 via-slate-950/30 to-slate-950/70" />
 
         {/* Brand tint */}
-        <div className="absolute inset-0 bg-gradient-to-br from-blue-950/40 via-transparent to-slate-950/30" />
+        <div className="absolute inset-0 bg-gradient-to-br from-navy/40 via-transparent to-slate-950/30" />
       </div>
 
       {/* =================================================
@@ -147,19 +146,22 @@ export default function SplashScreen({
       ================================================= */}
 
       <button
+        type="button"
         onClick={onGetStarted}
+        disabled={!ready}
         className="
           group absolute right-4 top-4 z-30
           flex items-center gap-2
           rounded-full
-          bg-blue-600
+          bg-brand-blue
           px-4 py-2
           text-xs font-semibold text-white
-          shadow-lg shadow-blue-900/40
+          shadow-lg shadow-navy/40
           ring-1 ring-white/10
           transition-all duration-200
-          hover:bg-blue-500 hover:shadow-xl hover:shadow-blue-900/50
+          hover:bg-navy hover:shadow-xl hover:shadow-navy/50
           active:scale-[0.98]
+          disabled:opacity-60 disabled:cursor-wait
           sm:right-8 sm:top-6 sm:px-5 sm:py-2.5 sm:text-sm
         "
       >
@@ -180,37 +182,20 @@ export default function SplashScreen({
         ================================================= */}
 
         <header className="flex shrink-0 flex-col items-center">
-          <div
-            className="
-              relative flex h-14 w-14 items-center justify-center
-              rounded-2xl
-              bg-gradient-to-br from-blue-500 to-blue-700
-              shadow-lg shadow-blue-950/50
-              ring-1 ring-white/20
-              sm:h-16 sm:w-16
-            "
-          >
-            <div className="absolute inset-0 rounded-2xl bg-gradient-to-b from-white/25 to-transparent" />
-            <GraduationCap
-              size={36}
-              strokeWidth={1.8}
-              className="relative text-white drop-shadow-sm sm:hidden"
-            />
-            <GraduationCap
-              size={42}
-              strokeWidth={1.8}
-              className="relative hidden text-white drop-shadow-sm sm:block"
-            />
-          </div>
+          {/* The emblem supplies its own navy roundel and gold ring, so it is
+              shown bare with only a soft drop shadow to lift it off the photo. */}
+          <BrandMark className="h-14 w-14 drop-shadow-lg sm:h-20 sm:w-20" />
 
-          <h1 className="mt-3 text-center text-2xl font-extrabold tracking-tight text-white drop-shadow-md sm:text-3xl">
-            Sinhgad{" "}
-            <span className="bg-gradient-to-r from-blue-300 to-sky-200 bg-clip-text text-transparent">
-              Placement Hub
+          <h1 className="mt-3 text-center text-3xl font-extrabold tracking-tight drop-shadow-md sm:text-4xl">
+            <span className="block bg-gradient-to-r from-gold via-gold-light to-gold bg-clip-text text-transparent">
+              SAEConnect
+            </span>
+            <span className="mt-1 block text-[11px] font-semibold uppercase tracking-[0.28em] text-slate-200/90 sm:text-xs">
+              SAE Placement Hub
             </span>
           </h1>
 
-          <p className="mt-1.5 text-center text-[10px] font-semibold uppercase tracking-[0.22em] text-slate-200/90 sm:text-xs">
+          <p className="mt-2 text-center text-[10px] font-semibold uppercase tracking-[0.22em] text-slate-300/80 sm:text-[11px]">
             Learn&nbsp; • &nbsp;Share&nbsp; • &nbsp;Grow Together
           </p>
         </header>
@@ -220,14 +205,14 @@ export default function SplashScreen({
         ================================================= */}
 
         <section className="mx-auto mt-4 max-w-3xl shrink-0 text-center sm:mt-6">
-          <div className="mb-3 inline-flex items-center gap-1.5 rounded-full border border-white/20 bg-white/10 px-3 py-1 text-[10px] font-semibold text-blue-100 shadow-sm backdrop-blur-md sm:text-xs">
+          <div className="mb-3 inline-flex items-center gap-1.5 rounded-full border border-white/20 bg-white/10 px-3 py-1 text-[10px] font-semibold text-blue-on-dark shadow-sm backdrop-blur-md sm:text-xs">
             <Sparkles size={11} />
             Student-driven placement community
           </div>
 
           <h2 className="text-2xl font-black leading-[1.1] tracking-tight text-white drop-shadow-lg sm:text-4xl lg:text-5xl">
             Real Experiences.{" "}
-            <span className="bg-gradient-to-r from-blue-300 via-sky-200 to-blue-100 bg-clip-text text-transparent">
+            <span className="bg-gradient-to-r from-gold via-gold-light to-gold bg-clip-text text-transparent">
               Brighter Futures.
             </span>
           </h2>
@@ -321,7 +306,7 @@ export default function SplashScreen({
             <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-white/15 ring-1 ring-white/20 sm:h-10 sm:w-10">
               <Quote
                 size={18}
-                className="text-blue-200"
+                className="text-blue-on-dark"
                 fill="currentColor"
               />
             </div>
@@ -333,17 +318,17 @@ export default function SplashScreen({
               </p>
 
               <p className="mt-0.5 text-center text-[10px] font-semibold text-slate-300/90 sm:text-xs">
-                — Sinhgad Placement Hub
+                — SAEConnect
               </p>
             </div>
           </div>
         </section>
 
         {/* =================================================
-            SLIDE CAPTION (only)
+            SLIDE CAPTION & CALL TO ACTION
         ================================================= */}
 
-        <section className="mt-auto flex w-full shrink-0 flex-col items-center pb-1 pt-4">
+        <section className="mt-auto flex w-full shrink-0 flex-col items-center pb-2 pt-3">
           <div className="min-h-[44px] text-center">
             <h3 className="text-sm font-bold text-white drop-shadow sm:text-base">
               {activeSlide.title}
@@ -353,6 +338,35 @@ export default function SplashScreen({
               {activeSlide.description}
             </p>
           </div>
+
+          {/* Action buttons. Held while `ready` is false so a signed-in user
+              can never tap through to the login page. */}
+          <div className="mt-3 flex items-center gap-3 z-30">
+            <button
+              type="button"
+              onClick={onGetStarted}
+              disabled={!ready}
+              className="flex items-center gap-2 px-6 py-2.5 rounded-full bg-gradient-to-r from-brand-blue to-navy hover:from-navy hover:to-navy-deep text-white font-bold text-xs sm:text-sm shadow-xl shadow-navy/50 transition-all duration-200 active:scale-95 cursor-pointer disabled:opacity-60 disabled:cursor-wait"
+            >
+              Get Started <ArrowRight size={15} />
+            </button>
+
+            <button
+              type="button"
+              onClick={onLogin}
+              disabled={!ready}
+              className="px-5 py-2.5 rounded-full bg-white/15 hover:bg-white/25 text-white font-semibold text-xs sm:text-sm backdrop-blur-md border border-white/20 transition-all duration-200 active:scale-95 cursor-pointer disabled:opacity-60 disabled:cursor-wait"
+            >
+              Sign In
+            </button>
+          </div>
+
+          {!ready && (
+            <p className="mt-2 flex items-center gap-1.5 text-[11px] font-medium text-slate-200/80">
+              <span className="h-3 w-3 animate-spin rounded-full border-2 border-white/40 border-t-transparent" />
+              Restoring your session…
+            </p>
+          )}
         </section>
       </div>
     </main>

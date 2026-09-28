@@ -1,1 +1,198 @@
 @import "tailwindcss";
+
+/* =====================================================
+   COLOR THEME — single source of truth
+   ===================================================== */
+
+:root {
+  /* Brand */
+  --navy: #0f2747;
+  --blue: #1e5aa8;
+  --gold: #c9a227;
+
+  /* Background */
+  --background: #f7f9fc;
+  --surface: #ffffff;
+
+  /* Text */
+  --text-primary: #172033;
+  --text-secondary: #475569;
+  --text-muted: #64748b;
+
+  /* Borders */
+  --border: #e2e8f0;
+
+  /* Status */
+  --success: #16805c;
+  --warning: #c9a227;
+  --danger: #c0392b;
+  --info: #1e5aa8;
+
+  /* ---------------------------------------------------------
+     DERIVED NAVY SCALE
+     The dark sections are layered surfaces. These steps are
+     tints/shades of --navy used for page backgrounds, cards,
+     dividers and borders so the depth hierarchy is preserved.
+     --------------------------------------------------------- */
+  --navy-deep: #0a1a30; /* page background on dark        */
+  --navy-surface: #17335c; /* raised card on dark          */
+  --navy-subtle: #22406a; /* hover / inset on dark         */
+  --navy-border: #3a6199; /* borders + dividers on dark    */
+  --gold-light: #dcb443; /* gold hover                    */
+
+  /* ---------------------------------------------------------
+     TINTS derived from --blue, for focus rings and light
+     surfaces. The single brand blue has no scale of its own,
+     so these keep the "blue" role consistent with the theme.
+     --------------------------------------------------------- */
+  --blue-tint: #e6eef8; /* focus ring / tinted background */
+  --blue-tint-strong: #bcd3ee; /* hover ring / border         */
+  --blue-on-dark: #9dc0e8; /* legible blue text on navy     */
+}
+
+/* Expose the theme as Tailwind utilities.
+   `inline` keeps the var() reference so tokens stay in one place. */
+@theme inline {
+  --color-navy: var(--navy);
+  --color-navy-deep: var(--navy-deep);
+  --color-navy-surface: var(--navy-surface);
+  --color-navy-subtle: var(--navy-subtle);
+  --color-navy-border: var(--navy-border);
+  --color-brand-blue: var(--blue);
+  --color-blue-tint: var(--blue-tint);
+  --color-blue-tint-strong: var(--blue-tint-strong);
+  --color-blue-on-dark: var(--blue-on-dark);
+  --color-gold: var(--gold);
+  --color-gold-light: var(--gold-light);
+  --color-canvas: var(--background);
+  --color-surface: var(--surface);
+  --color-ink: var(--text-primary);
+  --color-ink-secondary: var(--text-secondary);
+  --color-ink-muted: var(--text-muted);
+  --color-line: var(--border);
+  --color-success: var(--success);
+  --color-warning: var(--warning);
+  --color-danger: var(--danger);
+  --color-info: var(--info);
+}
+
+/* =====================================================
+   ENTRANCE ANIMATION UTILITIES
+
+   These were previously used by Navbar.tsx, Companies.tsx and
+   AsknShare.tsx but came from the `tailwindcss-animate` plugin,
+   which is not installed. They were silently no-ops.
+   ===================================================== */
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideInFromTop {
+  from {
+    opacity: 0;
+    transform: translateY(-6px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-in {
+  animation-duration: 150ms;
+  animation-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+  animation-fill-mode: both;
+}
+
+.fade-in {
+  animation-name: fadeIn;
+}
+
+.slide-in-from-top-2 {
+  animation-name: slideInFromTop;
+}
+
+@keyframes bounceSubtle {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-4px);
+  }
+}
+
+@keyframes spinSlow {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.animate-bounce-subtle {
+  animation: bounceSubtle 3s ease-in-out infinite;
+}
+
+.animate-spin-slow {
+  animation: spinSlow 8s linear infinite;
+}
+
+/* =====================================================
+   SCROLLBAR
+
+   Scoped to the dark theme. Previously the rule was global, so the
+   light pages (bg-slate-50 / bg-stone-50) rendered a navy track
+   against a white background.
+   ===================================================== */
+
+.dark-scroll::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+.dark-scroll::-webkit-scrollbar-track {
+  background: var(--navy-deep);
+}
+
+.dark-scroll::-webkit-scrollbar-thumb {
+  background: var(--navy-border);
+  border-radius: 4px;
+}
+
+.dark-scroll::-webkit-scrollbar-thumb:hover {
+  background: var(--gold);
+}
+
+/* Neutral scrollbar for the light pages. */
+:root {
+  color-scheme: light;
+}
+
+html {
+  scrollbar-color: #cbd5e1 #f1f5f9;
+}
+
+html::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+html::-webkit-scrollbar-track {
+  background: #f1f5f9;
+}
+
+html::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 9999px;
+}
+
+html::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
