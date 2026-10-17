@@ -3,17 +3,19 @@ import SplashScreen from "./components/SplashScreen";
 import Login from "./components/Login";
 import Register from "./components/Register";
 import HomeDashboard from "./components/HomeDashboard";
+import AboutPage from "./components/about"; // 1. Import AboutPage
 import "./index.css";
 
-type Screen = "splash" | "login" | "register" | "home";
+// 2. Add "about" to Screen type
+type Screen = "splash" | "login" | "register" | "home" | "about";
 
 function App() {
-  const [screen, setScreen] = useState<Screen>("home");
+  // 3. Set default screen state to "about"
+  const [screen, setScreen] = useState<Screen>("about");
   const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   /* =====================================================
      SPLASH SCREEN
-     - Get Started → login (if not logged in) / home (if logged in)
   ===================================================== */
 
   if (screen === "splash") {
@@ -44,8 +46,6 @@ function App() {
           console.log("Email / PRN:", emailOrPrn);
           console.log("Password:", password);
 
-          // Supabase authentication will be connected here later.
-          // On success:
           setIsLoggedIn(true);
           setScreen("home");
         }}
@@ -66,12 +66,26 @@ function App() {
         onRegister={(data) => {
           console.log("Registration Data:", data);
 
-          // Supabase registration will be connected here later.
-          // On success:
           setIsLoggedIn(true);
           setScreen("home");
         }}
       />
+    );
+  }
+
+  /* =====================================================
+     ABOUT PAGE
+  ===================================================== */
+
+  if (screen === "about") {
+    return (
+      <ErrorBoundary>
+        <AboutPage
+          onNavigateHome={() => setScreen("home")}
+          onNavigateExperiences={() => console.log("Experiences clicked")}
+          onNavigateInsights={() => console.log("Insights clicked")}
+        />
+      </ErrorBoundary>
     );
   }
 
@@ -83,6 +97,7 @@ function App() {
     <ErrorBoundary>
       <HomeDashboard
         onNavigateTab={(tab) => {
+          if (tab === "about") setScreen("about");
           console.log("Navigated to:", tab);
         }}
         onOpenLogin={() => setScreen("login")}
