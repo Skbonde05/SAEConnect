@@ -29,6 +29,41 @@ export default function AboutPage({
     onNavigateInsights,
 }: AboutProps) {
 
+    const [formData, setFormData] = useState({
+        fullName: "",
+        email: "",
+        userType: "Student",
+        subject: "General Inquiry",
+        prn: "",
+        message: "",
+    });
+
+    const [submitted, setSubmitted] = useState(false);
+    const [error, setError] = useState("");
+
+    const handleChange = (
+        e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>
+    ) => {
+        setFormData({ ...formData, [e.target.name]: e.target.value });
+        if (error) setError("");
+    };
+
+    const handleSubmit = (e: React.FormEvent) => {
+        e.preventDefault();
+
+        if (!formData.fullName.trim() || !formData.email.trim() || !formData.message.trim()) {
+            setError("Please fill in all required fields.");
+            return;
+        }
+
+        if (formData.userType === "Student" && !formData.prn.trim()) {
+            setError("PRN number is mandatory for Students.");
+            return;
+        }
+
+        console.log("Connect with Us Form Submitted:", formData);
+        setSubmitted(true);
+    };
     const [openFaq, setOpenFaq] = useState<number | null>(0);
 
 
@@ -783,6 +818,167 @@ export default function AboutPage({
 
                 </div>
 
+            </section>
+            {/* ═══════ CONNECT WITH US FORM ═══════ */}
+            <section className="mt-16 bg-white rounded-2xl border border-slate-200 p-8 shadow-sm max-w-4xl mx-auto mb-12">
+                <div className="text-center mb-8">
+                    <h2 className="text-3xl font-bold text-[#1a2332]">Connect with Us</h2>
+                    <p className="text-sm text-slate-500 mt-2">
+                        Have a question, feedback, or facing an issue? Send us a message below.
+                    </p>
+                </div>
+
+                {submitted ? (
+                    <div className="bg-emerald-50 border border-emerald-200 text-emerald-800 rounded-xl p-6 text-center space-y-2">
+                        <h3 className="font-bold text-lg">Message Sent Successfully!</h3>
+                        <p className="text-sm text-emerald-700">
+                            Thank you for reaching out. We will get back to you shortly.
+                        </p>
+                        <button
+                            onClick={() => {
+                                setSubmitted(false);
+                                setFormData({
+                                    fullName: "",
+                                    email: "",
+                                    userType: "Student",
+                                    subject: "General Inquiry",
+                                    prn: "",
+                                    message: "",
+                                });
+                            }}
+                            className="mt-4 px-4 py-2 bg-emerald-600 text-white rounded-lg text-xs font-semibold hover:bg-emerald-700 transition"
+                        >
+                            Send Another Message
+                        </button>
+                    </div>
+                ) : (
+                    <form onSubmit={handleSubmit} className="space-y-6">
+                        {error && (
+                            <div className="bg-red-50 border border-red-200 text-red-600 text-sm px-4 py-3 rounded-lg">
+                                {error}
+                            </div>
+                        )}
+
+                        <div className="grid md:grid-cols-2 gap-6">
+                            {/* Full Name */}
+                            <div>
+                                <label className="block text-xs font-semibold text-slate-700 mb-1">
+                                    Full Name <span className="text-red-500">*</span>
+                                </label>
+                                <input
+                                    type="text"
+                                    name="fullName"
+                                    value={formData.fullName}
+                                    onChange={handleChange}
+                                    placeholder="Enter your full name"
+                                    className="w-full px-4 py-2.5 rounded-lg border border-slate-200 text-sm outline-none focus:border-amber-500 transition"
+                                    required
+                                />
+                            </div>
+
+                            {/* Email Address */}
+                            <div>
+                                <label className="block text-xs font-semibold text-slate-700 mb-1">
+                                    Email Address <span className="text-red-500">*</span>
+                                </label>
+                                <input
+                                    type="email"
+                                    name="email"
+                                    value={formData.email}
+                                    onChange={handleChange}
+                                    placeholder="name@example.com"
+                                    className="w-full px-4 py-2.5 rounded-lg border border-slate-200 text-sm outline-none focus:border-amber-500 transition"
+                                    required
+                                />
+                            </div>
+                        </div>
+
+                        <div className="grid md:grid-cols-2 gap-6">
+                            {/* I am a... */}
+                            <div>
+                                <label className="block text-xs font-semibold text-slate-700 mb-1">
+                                    I am a... <span className="text-red-500">*</span>
+                                </label>
+                                <select
+                                    name="userType"
+                                    value={formData.userType}
+                                    onChange={handleChange}
+                                    className="w-full px-4 py-2.5 rounded-lg border border-slate-200 text-sm outline-none focus:border-amber-500 transition bg-white"
+                                >
+                                    <option value="Student">Student</option>
+                                    <option value="Alumni">Alumni</option>
+                                    <option value="Faculty">Faculty</option>
+                                    <option value="Other">Other</option>
+                                </select>
+                            </div>
+
+                            {/* PRN No */}
+                            <div>
+                                <label className="block text-xs font-semibold text-slate-700 mb-1">
+                                    PRN No.{" "}
+                                    {formData.userType === "Student" ? (
+                                        <span className="text-red-500">(Compulsory for Students *)</span>
+                                    ) : (
+                                        <span className="text-slate-400">(Optional)</span>
+                                    )}
+                                </label>
+                                <input
+                                    type="text"
+                                    name="prn"
+                                    value={formData.prn}
+                                    onChange={handleChange}
+                                    placeholder="Enter your PRN number"
+                                    className="w-full px-4 py-2.5 rounded-lg border border-slate-200 text-sm outline-none focus:border-amber-500 transition"
+                                    required={formData.userType === "Student"}
+                                />
+                            </div>
+                        </div>
+
+                        {/* Subject */}
+                        <div>
+                            <label className="block text-xs font-semibold text-slate-700 mb-1">
+                                Subject <span className="text-red-500">*</span>
+                            </label>
+                            <select
+                                name="subject"
+                                value={formData.subject}
+                                onChange={handleChange}
+                                className="w-full px-4 py-2.5 rounded-lg border border-slate-200 text-sm outline-none focus:border-amber-500 transition bg-white"
+                            >
+                                <option value="General Inquiry">General Inquiry</option>
+                                <option value="Report an Issue">Report an Issue</option>
+                                <option value="Suggest a Feature">Suggest a Feature</option>
+                                <option value="Placement Experience">Placement Experience</option>
+                                <option value="Feedback">Feedback</option>
+                                <option value="Other">Other</option>
+                            </select>
+                        </div>
+
+                        {/* Message */}
+                        <div>
+                            <label className="block text-xs font-semibold text-slate-700 mb-1">
+                                Message <span className="text-red-500">*</span>
+                            </label>
+                            <textarea
+                                name="message"
+                                rows={4}
+                                value={formData.message}
+                                onChange={handleChange}
+                                placeholder="Write your message here..."
+                                className="w-full px-4 py-2.5 rounded-lg border border-slate-200 text-sm outline-none focus:border-amber-500 transition resize-none"
+                                required
+                            />
+                        </div>
+
+                        {/* Submit Button */}
+                        <button
+                            type="submit"
+                            className="w-full sm:w-auto px-8 py-3 bg-amber-500 hover:bg-amber-600 text-[#1a2332] font-bold text-sm rounded-xl transition flex items-center justify-center gap-2 shadow-sm"
+                        >
+                            <span>Send Message</span>
+                        </button>
+                    </form>
+                )}
             </section>
 
 
